@@ -1,4 +1,13 @@
-.Rproj.user
+# History files
 .Rhistory
+.Rapp.history
+
+# Session Data files
 .RData
 .Ruserdata
+
+# RStudio files
+.Rproj.user/
+
+# Example: renv folders
+renv/library/
