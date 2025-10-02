@@ -270,7 +270,7 @@ sci_fish |>
 ```
 
 ```{r}
-ggsave(filename = "santa_cruz_island_fish.png", path = "week1/", width = 6, height = 7)
+ggsave(filename = "santa_cruz_island_fish.png", path = "week1/", width = 3, height = 2.5)
 ```
 
 
