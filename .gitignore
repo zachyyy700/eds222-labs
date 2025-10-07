@@ -10,4 +10,5 @@
 .Rproj.user/
 
 # DS Store
+.DS_Store
 week*/.DS_Store
