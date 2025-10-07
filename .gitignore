@@ -9,5 +9,5 @@
 # RStudio files
 .Rproj.user/
 
-# Example: renv folders
-renv/library/
+# DS Store
+week*/.DS_Store
