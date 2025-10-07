@@ -251,18 +251,21 @@ Read the data from the rreas.csv file and create a scatter plot relating fish ab
 
 ```{r}
 
-rreas_murres <- read_csv("data/rreas.csv")
+rreas_murres <- read_csv(here::here('week2', 'data', 'rreas.csv'))
 
 ```
 
 ```{r}
 #| label: q6
 
-
+ggplot(data = rreas_murres, aes(x = comu_rockfish_diet, y = rreas_rockfish_index)) +
+  geom_point()
 
 ```
 
 **Q6: Which variables did you choose for the x- and y-axis? What does this mean for the purpose of your model?**
+
+We are trying to predict rockfish abundance with the predictor: murre diet.
 
 ### Fit the model
 
@@ -271,8 +274,9 @@ Fit a model that predicts the RREAS rockfish abundance index from the fraction o
 ```{r}
 #| eval: false
 
+fishmodel <- lm(formula = rreas_rockfish_index ~ comu_rockfish_diet, data = rreas_murres)
 
-
+fishmodel_summary <- summary(fishmodel)
 ```
 
 ### Interpret the model
@@ -282,35 +286,60 @@ Find the $R^2$ value for your model.
 ```{r}
 #| label: q7
 
+beta0 <- coef(fishmodel_summary)[1]
+beta1 <- coef(fishmodel_summary)[2]
+sigma <- fishmodel_summary$sigma
 
+x <- rreas_murres$comu_rockfish_diet
 
+ybar <- mean(rreas_murres$rreas_rockfish_index)
+yhat <- beta0 + beta1 * x
+
+SST <- sum((rreas_murres$rreas_rockfish_index - ybar)^2)
+SSE <- sum((rreas_murres$rreas_rockfish_index - yhat)^2)
+
+R2 <- (SST - SSE) / SST
 ```
 
 **Q7: What does the R2 value tell you about the utility of your model for filling in the survey gap?**
+
+Using the common murre diet of rockfish, we are able to reduce about 70% (R2) of the variance when predicting rockfish abundance.
 
 Extract the estimated coefficients ($\hat \beta_0, \hat \beta_1$) and standard deviation ($\hat \sigma$) from the model.
 
 ```{r}
 #| label: q8
 
-
+beta0 <- coef(fishmodel_summary)[1]
+beta1 <- coef(fishmodel_summary)[2]
+sigma <- fishmodel_summary$sigma
 
 ```
 
 **Q8: In plain language, what do the coefficients and standard deviation of the model represent?**
+
+beta0 = -0.81: When common murre diet of rockfish is 0, we can expect -0.81 abundance of rockfish.
+
+beta1 = 6.1: For every 1 increase in murre diet of rockfish, we can expect 6 units of rockfish
+
+sigma = 1.2: We can expect 95% of values to lie within 2.4 somethings????
 
 Say it's 2020 and the RREAS has largely been canceled. You ask Point Blue to share their common murre diet data with you and they say it was 32.8% juvenile rockfish. Estimate the predicted value of the juvenile rockfish abundance index.
 
 ```{r}
 #| label: q9
 
-
+beta0 + beta1 * 0.328 #FIXME
 
 ```
 
 **Q9: What did you predict the juvenile rockfish abundance index was in 2020?**
 
+About 1.2
+
 **Q10: Your prediction is the *most likely* outcome, but the actual index won't take that value exactly. How would you estimate an interval that you could confidently say probably contains the actual index?**
+
+Using the model's sigma (STD), we can say that the index will most likely (95%) fall between plus or minus 2.4 (2 STDs) of 1.2 (predicted index).
 
 ## Recap
 
