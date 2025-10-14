@@ -318,11 +318,11 @@ sigma <- fishmodel_summary$sigma
 
 **Q8: In plain language, what do the coefficients and standard deviation of the model represent?**
 
-beta0 = -0.81: When common murre diet of rockfish is 0, we can expect -0.81 abundance of rockfish.
+beta0 = -0.81: When common murre diet of rockfish is 0, we can expect -0.81 (0) abundance of rockfish.
 
-beta1 = 6.1: For every 1 increase in murre diet of rockfish, we can expect 6 units of rockfish
+beta1 = 6.1: For every 1 increase in murre diet of rockfish, we can expect an increase of 6 in rockfish index.
 
-sigma = 1.2: We can expect 95% of values to lie within 2.4 somethings????
+sigma = 1.2: We can expect 95% of values to lie within 2.4 (2 STDs) rockfish indexes.
 
 Say it's 2020 and the RREAS has largely been canceled. You ask Point Blue to share their common murre diet data with you and they say it was 32.8% juvenile rockfish. Estimate the predicted value of the juvenile rockfish abundance index.
 
