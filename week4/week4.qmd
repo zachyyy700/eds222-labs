@@ -103,7 +103,7 @@ This is the key part of a permutation test! Remember, our goal is to estimate th
 
 **Q4: What column should we shuffle to break the association between treatment and outcome?**
 
--   Shuffling treatment column to break assocuation between treatment and outcome.
+-   Shuffling treatment column to break association between treatment and outcome.
 
 **Q5: Fill in the following code to perform one permutation and calculate the test statistic.**
 
@@ -186,9 +186,9 @@ When interpreting the p-value, we compare it to a *critical threshold*, usually 
 
 **Q10:** **Given** $p \gt \alpha$**,** **which of the following statements is a correct interpretation and why?**
 
-$\Rightarrow$ -   *Our evidence is consistent with the hypothesis that restoration method does not influence restoration outcome*
+$\Rightarrow$ - *Our evidence is consistent with the hypothesis that restoration method does not influence restoration outcome*
 
-- We cannot reject the hypothesis that restoration method does not influence restoration outcome
+-   We cannot reject the hypothesis that restoration method does not influence restoration outcome
 
 ## Bootstrap confidence interval
 
@@ -217,6 +217,7 @@ This is the key part of bootstrapping! Remember, our goal is to estimate the var
 #| label: q12
 
 one_bootstrap <- restoration %>% 
+  group_by(treatment) |> 
   mutate(booted = sample(success_fct,
                       size = length(success_fct),
                       replace = TRUE)) %>% 
@@ -235,7 +236,8 @@ one_bootstrap <- restoration %>%
 
 bootstrap <- function(i) {
   one_bootstrap <- restoration |> 
-  mutate(booted = sample(success_fct,
+    group_by(treatment) |> 
+    mutate(booted = sample(success_fct,
                       size = length(success_fct),
                       replace = TRUE)) |> 
   mutate(trial = i)
@@ -257,7 +259,8 @@ bootstrap_test_stats <- bootstrap_samples |>
   group_by(trial, treatment) |> 
   summarise(success_count = sum(booted == "Succeed"),
             treatment_count = n(),
-            proportion = success_count / treatment_count) 
+            proportion = success_count / treatment_count) |> 
+  ungroup()
 
 bootstrap_dips <- bootstrap_test_stats |> 
   group_by(trial) |> 
@@ -305,8 +308,8 @@ restoration_ci
 ggplot(bootstrap_dips, aes(x = difference)) +
   geom_histogram() +
   geom_vline(xintercept = dip, color = 'red', linewidth = 1.5) +
-  geom_vline(xintercept = -0.2, linetype = 'dotted') +
-  geom_vline(xintercept = 0.2, linetype = 'dotted') +
+  geom_vline(xintercept = -0.0502, linetype = 'dotted') +
+  geom_vline(xintercept = 0.3417, linetype = 'dotted') +
   labs(x = "Test Statistic")
 
 
@@ -318,6 +321,44 @@ The visualization you created for Q7 shows the null distribution of the test sta
 
 **Q18: What did you do to make the null distribution center on zero? Specifically, what code?**
 
+-   When mutating a new column to shuffle & randomize the treatment labels, the association between treatment and outcome is broken. This means that for each permutation, the treatment does not affect the outcome (success) and after 1000 permutations, the expected difference in proportions is 0. The null distribution confirms this by being centered around 0.
+
 **Q19: What did you do to make the bootstrap distribution center on the observed test statistic? Specifically, what code?**
 
+-   In creating the bootstrap distribution, no shuffling occurred compared to permuting so the association between treatment and outcome will be similar to our observed. Therefore we expect to see the bootstrap to be centered on our test statistic since each bootstrap trial is based on our actual, observed statistic.
+
 **Q20: What would happen to your bootstrap distribution if you sampled without replacement?**
+
+-   Without replacement, we'd have the same amount of successes or 'proportion of successes' as we did in our original experiment, just in a different order. Thus, the distribution of the test statistic would be the same throughout all bootstrap trials. This is seen in the next code chunk and histogram. The goal of bootstrapping is to see the variation of this proportion by creating new 'resampled' versions of our original data.
+
+```{r}
+bootstrap_noreplace <- function(i) {
+  one_bootstrap <- restoration |> 
+    group_by(treatment) |> 
+    mutate(booted = sample(success_fct,
+                      size = length(success_fct),
+                      replace = FALSE)) |> 
+  mutate(trial = i)
+}
+bootstrap_samples_noreplace <- map(1:1000, bootstrap_noreplace) |> 
+  list_rbind()
+
+bootstrap_ts_noreplace <- bootstrap_samples_noreplace |> 
+  group_by(trial, treatment) |> 
+  summarise(success_count = sum(booted == "Succeed"),
+            treatment_count = n(),
+            proportion = success_count / treatment_count) |> 
+  ungroup()
+
+bootstrap_dips_noreplace <- bootstrap_ts_noreplace |> 
+  group_by(trial) |> 
+  summarise(difference = proportion[2] - proportion[1]) |> 
+  ungroup()
+
+ggplot(bootstrap_dips_noreplace, aes(x = difference)) +
+  geom_histogram() +
+  geom_vline(xintercept = dip, color = 'red', linewidth = 1.5) +
+  geom_vline(xintercept = -0.0502, linetype = 'dotted') +
+  geom_vline(xintercept = 0.3417, linetype = 'dotted') +
+  labs(x = "Test Statistic")
+```
