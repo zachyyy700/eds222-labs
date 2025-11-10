@@ -39,7 +39,7 @@ This lab will repeat the inferences you conducted in last week's lab, using math
 #| label: fig-eelgrass-data
 #| fig-cap: "Success of eelgrass restoration plots by restoration method."
 
-restoration <- read_csv("week5/data/eelgrass.csv",
+restoration <- read_csv(here::here("data", "eelgrass.csv"),
                         show_col_types = FALSE)
 ggplot(restoration, aes(treatment, fill = success_fct)) +
   geom_bar() +
