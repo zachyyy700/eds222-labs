@@ -1,3 +1,7 @@
+# Render artifacts
+week*/*.html
+week*/*_files/
+
 # History files
 .Rhistory
 .Rapp.history
