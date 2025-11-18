@@ -1,6 +1,10 @@
 # Render artifacts
 week*/*.html
 week*/*_files/
+# Data folders
+week*/data/
+# Images
+week*/images/
 
 # History files
 .Rhistory
