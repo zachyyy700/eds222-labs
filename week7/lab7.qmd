@@ -342,6 +342,13 @@ ggplot(race_model_pred_filtered, aes(pcthisp, p)) +
 
 ```
 
+```{r}
+summary(race_class_model)
+confint(race_class_model)
+```
+
 The coefficient for an interaction term in a logistic regression model is very difficult to interpret on its own! But that value has important consequences for the lives of millions of people. Predictions are usually more straightforward to interpret than coefficients. Use your figure and the outputs of `summary()` and `confint()` to reflect on the following prompt. Reply to the corresponding thread on Slack with your reflection to get 1 token.
 
 **In plain language, what is the relationship between race, class, and SDWA violations? Which communities face the greatest risks associated with drinking water? How would you use the statistical outputs (model summary, prediction figure) to describe that risk quantitatively? How could those statistical outputs be misinterpreted?**
+
+-   First, looking at the model coefficients alone: 1. `pctpov` = 0.012, percent poverty alone increases probability of `violation`, 2. `pcthisp` = -0.0056, percent Hispanic alone slightly *decreases* probability of `violation`, 3. `pctpov:pcthisp` = 0.0003, the interaction of poverty and race results in a steeper rise in `violation` probability. Communities that are more poor and more Hispanic face greater risks for SDWA violations. Quantitatively, this is seen in the positive interaction coefficient ($0.0003 \pm 0.00006$ at a 95% CI). In the figure, this corresponds to the low probabilities at low poverty (0-25%) and the higher probabilities at high poverty (50-75%), the predictions become much steeper as Hispanic percentage increases. One way these outputs could be misinterpreted is one could say "poor & Hispanic communities *cause* the poor drinking water in their communities". Instead of the saying predictors are causing the poor water quality, one could say that the environmental risk is socially patterned as there is a significant correlation between our predictors and response.
